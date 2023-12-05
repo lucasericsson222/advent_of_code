@@ -1,3 +1,5 @@
 input.txt
 input1.txt
 *.out
+.vscode
+*.dSYM
