@@ -4,3 +4,4 @@ input_test.txt
 *.out
 .vscode
 *.dSYM
+.DS_Store
