@@ -7,7 +7,7 @@ fn main() {
 fn parse(input: &str) -> usize {
     let mut sum = 0;
 
-    for input_section in input.split("\n\n") {
+    for (i, input_section) in input.split("\n\n").enumerate() {
         let mut grid = vec![];
         for line in input_section.lines() {
             let mut row = vec![];
@@ -17,17 +17,24 @@ fn parse(input: &str) -> usize {
             grid.push(row);
         }
        
-        for row in 1..grid.len() - 1 {
+        let mut temp_sum = 0;
+        for row in 0..grid.len() - 1 {
             if check_horizontal_mirror(&grid, row) {
-                sum += (row + 1) * 100;
+                temp_sum += (row + 1) * 100;
             }
         }
 
-        for col in 1..grid[0].len() - 1 {
+        for col in 0..grid[0].len() - 1 {
             if check_vertical_mirror(&grid, col) {
-                sum += col + 1;
+                temp_sum += col + 1;
             }
         }
+
+        if temp_sum == 0 {
+            println!("{}", i);
+        }
+
+        sum += temp_sum;
 
     }
 
@@ -80,18 +87,15 @@ fn check_horizontal_mirror(
         let dist = row - i;
         let mirror_row = row + 1 + dist;
 
-    if row == 6 {
-        println!("row, mirror_row {}, {}", i, mirror_row);
-    }
-
         if mirror_row >= grid.len() {
             continue;
         }
 
-    if row == 6 {
-        print_row(grid, i);
-        print_row(grid, mirror_row);
-    }
+        if row == 6 {
+            print_row(grid, i);
+            print_row(grid, mirror_row);
+        }
+
         for col in 0..grid[0].len() {
             if grid[i][col] != grid[mirror_row][col] {
                 return false;
@@ -197,5 +201,24 @@ mod tests {
 ..########..##.
 ");
         assert_eq!(result, 6);
+    }
+
+    #[test]
+    fn parse_not_zero() {
+        let result = parse(r"#.#.....#.##.##.#
+#.#.....#.##.##.#
+.....#...#####...
+...#.###....#...#
+.###..####.#..#.#
+#.###.#.#..###..#
+..####...##.#.##.
+..####...##.#.##.
+#.#.#.#.#..###..#
+.###..####.#..#.#
+...#.###....#...#
+.....#...#####...
+#.#.....#.##.##.#
+");
+        assert_eq!(result, 100);
     }
 }
