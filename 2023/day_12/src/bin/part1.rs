@@ -21,7 +21,6 @@ fn parse(input: &str) -> usize {
             .map(|value| value.parse::<usize>().unwrap())
             .collect();
 
-
         println!("{:#?}", hash_record);
         println!("{:#?}", num_record); 
         let temp_count = count_placement_ways(0, 0, &hash_record, &num_record);
