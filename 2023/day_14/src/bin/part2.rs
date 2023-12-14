@@ -9,14 +9,34 @@ fn parse(input: &str) -> usize {
 
     let mut grid = str_to_grid(input);
 
-    println!("-------------------");
-    print_grid(&grid);
-    tilt_north(&mut grid);
-    println!("-------------------");
-    print_grid(&grid);
+    let mut previous_cycles = vec![]; 
+   
+    let index;
+    loop {
+        tilt_north(&mut grid);
+        tilt_west(&mut grid);
+        tilt_south(&mut grid);
+        tilt_east(&mut grid);
+        if let Some(previous_index) = tilt_in_previous_cycles(&grid, &previous_cycles) {
+            println!("Current_index: {}", previous_cycles.len());
+            println!("Cycle_index: {}", previous_index);
+            index = previous_index;
+            previous_cycles.push(grid.clone());
+            break;
+        }
+        previous_cycles.push(grid.clone());
+    }
+    
+    print_grid(&previous_cycles[previous_cycles.len() - 1]);
+    println!("-------------");
+    print_grid(&previous_cycles[index]);
 
-    println!("-------------------");
-    for (row_num, row) in grid.iter().rev().enumerate() {
+    let cycle_length = previous_cycles.len() - 1 - index;
+    println!("Cycle_Length: {}", cycle_length);
+    let new_billion_position = (1000000000 - index - 1) % cycle_length + index;
+
+    println!("new_billion_position {}", new_billion_position);
+    for (row_num, row) in previous_cycles[new_billion_position].iter().rev().enumerate() {
         for object in row {
             if *object == 'O' {
                 sum += row_num + 1;
@@ -26,6 +46,16 @@ fn parse(input: &str) -> usize {
 
 
     return sum;
+}
+
+fn tilt_in_previous_cycles(current: &Vec<Vec<char>>, olds: &Vec<Vec<Vec<char>>>) -> Option<usize> {
+    for (id, old) in olds.iter().enumerate() {
+        if old == current {
+            return Some(id);
+        }
+         
+    }
+    return None;
 }
 
 fn tilt_north(grid: &mut Vec<Vec<char>>) {
@@ -138,34 +168,6 @@ mod tests {
     use super::*;
     
     #[test]
-    fn parse_example_tilt_north() {
-        let mut result = str_to_grid(r"O....#....
-O.OO#....#
-.....##...
-OO.#O....O
-.O.....O#.
-O.#..O.#.#
-..O..#O..O
-.......O..
-#....###..
-#OO..#....
-");
-        tilt_north(&mut result);
-        let solution = str_to_grid(r"OOOO.#.O..
-OO..#....#
-OO..O##..O
-O..#.OO...
-........#.
-..#....#.#
-..O..#.O.O
-..O.......
-#....###..
-#....#....
-");
-        assert_eq!(result, solution);
-    } 
-
-    #[test]
     fn parse_example() {
         let result = parse(r"O....#....
 O.OO#....#
@@ -178,6 +180,6 @@ O.#..O.#.#
 #....###..
 #OO..#....
 ");
-        assert_eq!(result, 136);
+        assert_eq!(result, 64);
     }
 }
