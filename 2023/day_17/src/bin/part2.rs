@@ -113,11 +113,6 @@ fn dijkstra(weights: &Vec<Vec<usize>>) -> usize {
 fn neighbors(current: &Node, weights: &Vec<Vec<usize>>) -> Vec<Node> {
     let mut result = vec![];
 
-    if current.row == 9 || current.row == 10 {
-        if current.col == weights[0].len() - 1 {
-            println!("row {}, col {}, dir: {}", current.row, current.col, current.dir);
-        }
-    }
     for dir in 0..4 {
         if dir == current.dir {
             continue;
@@ -126,7 +121,7 @@ fn neighbors(current: &Node, weights: &Vec<Vec<usize>>) -> Vec<Node> {
             continue;
         }
         let mut dist_sum = current.dist;
-        for jump_length in 1..=3 {
+        for jump_length in 1..=10 {
             let (mut dir_row, mut dir_col) = dir_to_tuple(dir);
             dir_row *= jump_length; 
             dir_col *= jump_length;
@@ -140,6 +135,10 @@ fn neighbors(current: &Node, weights: &Vec<Vec<usize>>) -> Vec<Node> {
                 break;
             }
             dist_sum += weights[row_index as usize][col_index as usize];
+
+            if jump_length < 4 {
+                continue;
+            }
             
             result.push(
                 Node {
@@ -206,6 +205,6 @@ mod tests {
 2546548887735
 4322674655533
 ");
-        assert_eq!(result, 102);
+        assert_eq!(result, 94);
     }
 }
