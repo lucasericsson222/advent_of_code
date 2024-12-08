@@ -1,10 +1,18 @@
 fn main() {
-    let input = include_str!("./input1.txt");
+    let input = include_str!("./inputtejas.txt");
     let output = parse(input);
     dbg!(output);
 }
 
 fn parse(input: &str) -> i32 {
+    let mut out = vec![];
+    for line in input.lines() {
+        let mut row = vec![];
+        for char in line.chars() {
+            row.push(char);
+        }
+        out.push(row);
+    }
     let mut sum;
 
     let mut grid = vec![];
@@ -19,9 +27,16 @@ fn parse(input: &str) -> i32 {
     let mut pos = find_character_pos(&grid);
     let mut dir = (-1, 0);
 
-    while move_character(&mut grid, &mut pos, &mut dir) {}
+    while move_character(&mut grid, &mut pos, &mut dir, &mut out) {}
 
     sum = count_num_x(&grid);
+
+    for i in 0..out.len() {
+        for j in 0..out[i].len() {
+            print!("{}", out[i][j]);
+        }
+        print!("\n");
+    }
 
     return sum;
 }
@@ -38,7 +53,12 @@ fn count_num_x(grid: &Vec<Vec<char>>) -> i32 {
     sum
 }
 
-fn move_character(grid: &mut Vec<Vec<char>>, pos: &mut (i32, i32), dir: &mut (i32, i32)) -> bool {
+fn move_character(
+    grid: &mut Vec<Vec<char>>,
+    pos: &mut (i32, i32), 
+    dir: &mut (i32, i32),
+    out: &mut Vec<Vec<char>>) -> bool {
+    
     print!("{},{}\n", pos.0, pos.1);
     if pos.0 < 0 || pos.0 >= grid.len() as i32 {
         return false;
@@ -48,6 +68,7 @@ fn move_character(grid: &mut Vec<Vec<char>>, pos: &mut (i32, i32), dir: &mut (i3
     }
 
     grid[pos.0 as usize][pos.1 as usize] = 'X';
+    out[pos.0 as usize][pos.1 as usize] = 'X';
     let mut newpos = (pos.0 + dir.0, pos.1 + dir.1);
 
     if newpos.0 < 0 || newpos.0 >= grid.len() as i32 {
