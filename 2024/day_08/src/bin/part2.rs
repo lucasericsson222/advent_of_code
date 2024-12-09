@@ -50,7 +50,6 @@ fn parse(input: &str) -> i32 {
                 if check_position(new_pos_1_x, new_pos_1_y, max_i, max_j) {
                     locations.insert((new_pos_1_x, new_pos_1_y));
                 }
-                
             }
 
             for i in 0..=50 {
