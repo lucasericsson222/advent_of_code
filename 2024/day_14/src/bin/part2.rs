@@ -13,22 +13,23 @@ fn parse(input: &str) -> usize {
     loop {
         let cur = run_steps(input, sec);
         //display(cur); 
-        let cur_val = count_neighbors(cur);
+        let cur_val = count_neighbors(&cur);
         if cur_val >= max_val {
             max_val = cur_val;
             println!("{}", sec);
             println!("{}", cur_val);
+            display(&cur);
         }
         sec += 1;
     }
     return 0;
 }
 
-fn count_neighbors(cur: HashSet<(i32, i32)>) -> i32 {
+fn count_neighbors(cur: &HashSet<(i32, i32)>) -> i32 {
 
     let mut count = 0;
 
-    for pos in &cur {
+    for pos in cur {
         for offset in vec![(1,0), (0, 1), (-1, 0), (0, -1)] {
             if cur.contains(&(pos.0 + offset.0, pos.1 + offset.1)) {
                 count += 1;
@@ -38,7 +39,7 @@ fn count_neighbors(cur: HashSet<(i32, i32)>) -> i32 {
     count
 }
 
-fn display(cur: HashSet<(i32, i32)>) {
+fn display(cur: &HashSet<(i32, i32)>) {
     let width = 101;
     let height = 103;
 
